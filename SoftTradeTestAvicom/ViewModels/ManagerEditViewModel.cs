@@ -15,79 +15,62 @@ namespace SoftTradeTestAvicom.ViewModels
 
         private readonly SoftTradeDbContext _db;
 
+        private Manager _manager;
+
+        private bool _addNew;
+
         public ManagerEditViewModel(INavigationManager navigationManager, SoftTradeDbContext softTradeDbContext)
         {
             _navigationManager = navigationManager;
             _db = softTradeDbContext;
         }
 
-        private Command _cancel;
-
-        public Command Cancel
-        {
-            get
+        public Command Cancel =>
+            new(obj =>
             {
-                return _cancel ??
-                    (_cancel = new Command(obj =>
-                    {
-                        _navigationManager.Navigate(NavigationKeys.ManagerListView);
-                    }));
-            }
-        }
+                _navigationManager.Navigate(NavigationKeys.ManagerListView);
+            });
 
-        private Command _ok;
-
-        public Command Ok
-        {
-            get
+        public Command Ok =>
+            new(obj =>
             {
-                return _ok ??
-                    (_ok = new Command(obj =>
-                    {
-                        if (_manager == null)
-                        {
-                            var manager = new Manager
-                            {
-                                Created = DateTime.Now,
-                                Name = _name
-                            };
-                            _db.Managers.Add(manager);
-                            _db.SaveChanges();
-                            _navigationManager.Navigate(NavigationKeys.ManagerListView, manager);
-                            Name = String.Empty;
-                        }
-                        else
-                        {
-                            _manager.Name = Name;
-                            _db.Managers.Update(_manager);
-                            _db.SaveChanges();
-                            _navigationManager.Navigate(NavigationKeys.ManagerListView, _manager);
-                            Name = String.Empty;
-                        }
-                        
-                    }));
-            }
-        }
+                if (_addNew)
+                {
+                    _ = _db.Managers.Add(Manager);
+                    _ = _db.SaveChanges();
+                    _navigationManager.Navigate(NavigationKeys.ManagerListView, Manager);
+                }
+                else
+                {
+                    _ = _db.Managers.Update(Manager);
+                    _ = _db.SaveChanges();
+                    _navigationManager.Navigate(NavigationKeys.ManagerListView, Manager);
+                }
+            });
 
-        private Manager _manager;
-
-        private string _name;
-
-        public string Name 
+        public Manager Manager
         {
-            get { return _name; }
-            set { _name = value; OnPropertyChanged(); }
+            get => _manager;
+            set { _manager = value; OnPropertyChanged(); }
         }
 
         public void OnNavigatingTo(object arg)
         {
-            if (arg != null)
+            if (arg is Manager manager)
             {
-                _manager = (Manager)arg;
-                Name = _manager.Name;
-            };
+                Manager = manager;
+                _addNew = false;
+            }
+            else
+            {
+                _addNew = true;
+                Manager = new Manager();
+            }
         }
 
-        public void OnNavigatingFrom(){}
+        public void OnNavigatingFrom()
+        {
+            Manager = null;
+        }
     }
 }

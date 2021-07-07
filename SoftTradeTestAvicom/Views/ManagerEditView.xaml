@@ -7,9 +7,10 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel>
+        <TextBlock>Manager edit</TextBlock>
         <Button Command="{Binding Cancel}">Cancel</Button>
         <Button Command="{Binding Ok}">Ok</Button>
         <TextBlock>Имя: </TextBlock>
-        <TextBox Text="{Binding Name}"></TextBox>
+        <TextBox Text="{Binding Manager.Name}"></TextBox>
     </StackPanel>
 </UserControl>

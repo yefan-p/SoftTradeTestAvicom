@@ -17,5 +17,7 @@ namespace SoftTradeTestAvicom.Models
         }
 
         public DbSet<Manager> Managers { get; set; }
+
+        public DbSet<Product> Products { get; set; }
     }
 }

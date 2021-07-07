@@ -17,18 +17,16 @@ namespace SoftTradeTestAvicom.ViewModels
             _navigationManager = navigationManager;
         }
 
-        private Command _goManagerList;
-
-        public Command GoManagerList
-        {
-            get
+        public Command GoManagerList =>
+            new(obj =>
             {
-                return _goManagerList ??
-                    (_goManagerList = new Command(obj =>
-                    {
-                        _navigationManager.Navigate(NavigationKeys.ManagerListView);
-                    }));
-            }
-        }
+                _navigationManager.Navigate(NavigationKeys.ManagerListView);
+            });
+
+        public Command GoProductList =>
+            new(obj =>
+            {
+                _navigationManager.Navigate(NavigationKeys.ProductListView);
+            });
     }
 }

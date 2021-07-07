@@ -8,7 +8,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel>
         <Button Command="{Binding GoManagerList}">Manager List</Button>
-        <Button>Product List</Button>
+        <Button Command="{Binding GoProductList}">Product List</Button>
         <Button>Client List</Button>
     </StackPanel>
 </UserControl>

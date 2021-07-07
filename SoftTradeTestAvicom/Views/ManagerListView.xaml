@@ -13,12 +13,10 @@
         <Button Command="{Binding Edit}">Edit</Button>
         <Button Command="{Binding Delete}" CommandParameter="{Binding SelectedManager}">Delete</Button>
         <Button Command="{Binding Refresh}">Refresh</Button>
-        <ListBox Grid.Column="0" ItemsSource="{Binding Managers}" SelectedItem="{Binding SelectedManager}">
+        <ListBox ItemsSource="{Binding Managers}" SelectedItem="{Binding SelectedManager}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Margin="5">
-                        <TextBlock Text="{Binding Path=Id}" />
-                        <TextBlock Text="{Binding Path=Created}" />
                         <TextBlock FontSize="18" Text="{Binding Path=Name}" />
                     </StackPanel>
                 </DataTemplate>

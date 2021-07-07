@@ -15,112 +15,72 @@ namespace SoftTradeTestAvicom.ViewModels
         private readonly SoftTradeDbContext _db;
 
         private readonly INavigationManager _navigationManager;
-  
+
+        private Manager _selectedManager;
+
         public ManagerListViewModel(SoftTradeDbContext dbContext, INavigationManager navigationManager)
         {
             _db = dbContext;
-            Managers = new ObservableCollection<Manager>(_db.Managers.ToList());
             _navigationManager = navigationManager;
+
+            Managers = new ObservableCollection<Manager>(_db.Managers.ToList());
         }
 
         public ObservableCollection<Manager> Managers { get; set; }
 
-        private Manager _selectedManager;
-
-        public Manager SelectedManager 
+        public Manager SelectedManager
         {
-            get { return _selectedManager; } 
+            get => _selectedManager;
             set { _selectedManager = value; OnPropertyChanged(); }
         }
 
-        private Command _goMainMenu;
-
-        public Command GoMainMenu
-        {
-            get
+        public Command GoMainMenu =>
+            new(obj =>
             {
-                return _goMainMenu ??
-                    (_goMainMenu = new Command(obj =>
-                    {
-                        _navigationManager.Navigate(NavigationKeys.MainMenuView);
-                    }));
-            }
-        }
+                _navigationManager.Navigate(NavigationKeys.MainMenuView);
+            });
 
-        private Command _delete;
-
-        public Command Delete
-        {
-            get
+        public Command Delete =>
+            new(obj =>
             {
-                return _delete ??
-                  (_delete = new Command(obj =>
-                  {
-                      Manager manager = obj as Manager;
-                      if (manager != null)
-                      {
-                          Managers.Remove(manager);
-                          _db.Managers.Remove(manager);
-                          _db.SaveChanges();
-                      }
-                  },
-                 (obj) => Managers.Count > 0));
-            }
-        }
+                if (obj is Manager manager)
+                {
+                    _ = Managers.Remove(manager);
+                    _ = _db.Managers.Remove(manager);
+                    _ = _db.SaveChanges();
+                }
+            },
+            obj => Managers.Count > 0 && SelectedManager != null);
 
-        private Command _add;
-
-        public Command Add
-        {
-            get
+        public Command Add =>
+            new(obj =>
             {
-                return _add ??
-                    (_add = new Command(obj =>
-                    {
-                        _navigationManager.Navigate(NavigationKeys.ManagerEditView);
-                    }));
-            }
-        }
+                _navigationManager.Navigate(NavigationKeys.ManagerEditView);
+            });
 
-        private Command _edit;
-
-        public Command Edit
-        {
-            get
+        public Command Edit =>
+            new(obj =>
             {
-                return _edit ??
-                    (_edit = new Command(obj =>
-                    {
-                        _navigationManager.Navigate(NavigationKeys.ManagerEditView, SelectedManager);
-                        Managers.Remove(SelectedManager);
-                    }));
-            }
-        }
+                _navigationManager.Navigate(NavigationKeys.ManagerEditView, SelectedManager);
+            },
+            obj => SelectedManager != null);
 
-        private Command _refresh;
-
-        public Command Refresh
-        {
-            get
+        public Command Refresh =>
+            new(obj =>
             {
-                return _refresh ??
-                    (_refresh = new Command(obj =>
-                    {
-                        Managers = new ObservableCollection<Manager>(_db.Managers.ToList());
-                        OnPropertyChanged("Managers");
-                    }));
-            }
-        }
+                Managers = new ObservableCollection<Manager>(_db.Managers.ToList());
+                OnPropertyChanged(nameof(Managers));
+            });
 
         public void OnNavigatingTo(object arg)
         {
-            if (arg != null)
+            if (arg is Manager)
             {
-                Manager manager = (Manager)arg;
-                Managers.Add(manager);
+                Managers = new ObservableCollection<Manager>(_db.Managers.ToList());
+                OnPropertyChanged(nameof(Managers));
             }
         }
 
-        public void OnNavigatingFrom(){}
+        public void OnNavigatingFrom() { }
     }
 }
