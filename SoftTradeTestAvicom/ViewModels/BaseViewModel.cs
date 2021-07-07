@@ -8,11 +8,6 @@ namespace SoftTradeTestAvicom.ViewModels
     public class BaseViewModel : INotifyPropertyChanged
     {
         /// <summary>
-        /// Переключение между различными представлениями
-        /// </summary>
-        public INavigationManager NavigationManager { get; set; }
-
-        /// <summary>
         /// Свойство обновлено
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;

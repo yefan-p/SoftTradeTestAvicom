@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 namespace SoftTradeTestAvicom.Utils
 {
-    public class MyCommand : ICommand
+    public class Command : ICommand
     {
         private Action<object> execute;
         private Func<object, bool> canExecute;
@@ -14,7 +14,7 @@ namespace SoftTradeTestAvicom.Utils
             remove { CommandManager.RequerySuggested -= value; }
         }
 
-        public MyCommand(Action<object> execute, Func<object, bool> canExecute = null)
+        public Command(Action<object> execute, Func<object, bool> canExecute = null)
         {
             this.execute = execute;
             this.canExecute = canExecute;

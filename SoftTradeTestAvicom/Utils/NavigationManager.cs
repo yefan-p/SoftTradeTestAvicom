@@ -8,15 +8,15 @@ namespace SoftTradeTestAvicom.Utils
 {
     public class NavigationManager : INavigationManager
     {
-        private readonly Dispatcher dispatcher;
-        private readonly ContentControl frameControl;
-        private readonly IDictionary<string, object> viewModelsByNavigationKey = new Dictionary<string, object>();
-        private readonly IDictionary<Type, Type> viewTypesByViewModelType = new Dictionary<Type, Type>();
+        private readonly Dispatcher _dispatcher;
+        private readonly ContentControl _frameControl;
+        private readonly IDictionary<string, object> _viewModelsByNavigationKey = new Dictionary<string, object>();
+        private readonly IDictionary<Type, Type> _viewTypesByViewModelType = new Dictionary<Type, Type>();
 
         public NavigationManager(Dispatcher dispatcher, ContentControl frameControl)
         {
-            this.dispatcher = dispatcher ?? throw new ArgumentNullException("dispatcher");
-            this.frameControl = frameControl ?? throw new ArgumentNullException("frameControl");
+            _dispatcher = dispatcher ?? throw new ArgumentNullException("dispatcher");
+            _frameControl = frameControl ?? throw new ArgumentNullException("frameControl");
         }
 
         public void Register<TViewModel, TView>(TViewModel viewModel, string navigationKey)
@@ -28,8 +28,8 @@ namespace SoftTradeTestAvicom.Utils
             if (navigationKey == null)
                 throw new ArgumentNullException("navigationKey");
 
-            viewModelsByNavigationKey[navigationKey] = viewModel;
-            viewTypesByViewModelType[typeof(TViewModel)] = typeof(TView);
+            _viewModelsByNavigationKey[navigationKey] = viewModel;
+            _viewTypesByViewModelType[typeof(TViewModel)] = typeof(TView);
         }
 
         public void Navigate(string navigationKey, object arg = null)
@@ -44,18 +44,18 @@ namespace SoftTradeTestAvicom.Utils
                 InvokeNavigatingTo(viewModel, arg);
 
                 var view = CreateNewView(viewModel);
-                frameControl.Content = view;
+                _frameControl.Content = view;
             });
         }
 
         private void InvokeInMainThread(Action action)
         {
-            dispatcher.Invoke(action);
+            _dispatcher.Invoke(action);
         }
 
         private FrameworkElement CreateNewView(object viewModel)
         {
-            var viewType = viewTypesByViewModelType[viewModel.GetType()];
+            var viewType = _viewTypesByViewModelType[viewModel.GetType()];
             var view = (FrameworkElement)Activator.CreateInstance(viewType);
             view.DataContext = viewModel;
             return view;
@@ -63,12 +63,12 @@ namespace SoftTradeTestAvicom.Utils
 
         private object GetNewViewModel(string navigationKey)
         {
-            return viewModelsByNavigationKey[navigationKey];
+            return _viewModelsByNavigationKey[navigationKey];
         }
 
         private void InvokeNavigatingFrom()
         {
-            var oldView = frameControl.Content as FrameworkElement;
+            var oldView = _frameControl.Content as FrameworkElement;
             if (oldView == null)
                 return;
 

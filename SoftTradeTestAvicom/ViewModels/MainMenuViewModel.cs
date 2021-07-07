@@ -10,21 +10,21 @@ namespace SoftTradeTestAvicom.ViewModels
 {
     public class MainMenuViewModel : BaseViewModel
     {
-        readonly INavigationManager _navigationManager;
+        private readonly INavigationManager _navigationManager;
 
         public MainMenuViewModel(INavigationManager navigationManager)
         {
             _navigationManager = navigationManager;
         }
 
-        private MyCommand goManagerList;
+        private Command _goManagerList;
 
-        public MyCommand GoManagerList
+        public Command GoManagerList
         {
             get
             {
-                return goManagerList ??
-                    (goManagerList = new MyCommand(obj =>
+                return _goManagerList ??
+                    (_goManagerList = new Command(obj =>
                     {
                         _navigationManager.Navigate(NavigationKeys.ManagerListView);
                     }));

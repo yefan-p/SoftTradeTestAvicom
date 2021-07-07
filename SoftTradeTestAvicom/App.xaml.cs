@@ -11,6 +11,7 @@ using System.Windows;
 using SoftTradeTestAvicom.Views;
 using SoftTradeTestAvicom.ViewModels;
 using SoftTradeTestAvicom.Utils;
+using SoftTradeTestAvicom.Models;
 
 namespace SoftTradeTestAvicom
 {
@@ -31,11 +32,14 @@ namespace SoftTradeTestAvicom
         protected override void OnStartup(StartupEventArgs e)
         {
             var navigator = _serviceProvider.GetService<INavigationManager>();
+
             var mainMenuViewModel = _serviceProvider.GetService<MainMenuViewModel>();
             var managerListViewModel = _serviceProvider.GetService<ManagerListViewModel>();
+            var managerEditViewModel = _serviceProvider.GetService<ManagerEditViewModel>();
 
             navigator.Register<MainMenuViewModel, MainMenuView>(mainMenuViewModel, NavigationKeys.MainMenuView);
             navigator.Register<ManagerListViewModel, ManagerListView>(managerListViewModel, NavigationKeys.ManagerListView);
+            navigator.Register<ManagerEditViewModel, ManagerEditView>(managerEditViewModel, NavigationKeys.ManagerEditView);
 
             navigator.Navigate(NavigationKeys.MainMenuView);
         }
@@ -45,10 +49,16 @@ namespace SoftTradeTestAvicom
             var window = new MainWindow();
             var mainNavManager = new NavigationManager(Dispatcher, window.FrameContent);
 
-            services.AddSingleton<INavigationManager>(mainNavManager);
+            services.AddTransient<INavigationManager>(p =>
+            {
+                return mainNavManager;
+            });
+
+            services.AddDbContext<SoftTradeDbContext>();
 
             services.AddTransient<MainMenuViewModel, MainMenuViewModel>();
             services.AddTransient<ManagerListViewModel, ManagerListViewModel>();
+            services.AddTransient<ManagerEditViewModel, ManagerEditViewModel>();
 
             window.Show();
         }
