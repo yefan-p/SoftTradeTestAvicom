@@ -19,6 +19,8 @@ namespace SoftTradeTestAvicom.ViewModels
 
         private bool _addNew;
 
+        private string _oldView;
+
         public ProductEditViewModel(SoftTradeDbContext softTradeDbContext,
             INavigationManager navigationManager)
         {
@@ -30,12 +32,23 @@ namespace SoftTradeTestAvicom.ViewModels
 
         public static List<string> SubscriptionPeriod => new() { "Месяц", "Квартал", "Год" };
 
+        /// <summary>
+        /// Отменить изменения
+        /// </summary>
         public Command Cancel =>
             new(obj =>
             {
-                _navigationManager.Navigate(NavigationKeys.ProductListView);
+                var input = new NavigationInput
+                {
+                    NavigationTo = _oldView,
+                    NavigationFrom = NavigationKeys.ProductEditView
+                };
+                _navigationManager.Navigate(input);
             });
 
+        /// <summary>
+        /// Сохранить изменения
+        /// </summary>
         public Command Ok =>
             new(obj =>
             {
@@ -43,30 +56,48 @@ namespace SoftTradeTestAvicom.ViewModels
                 {
                     _ = _db.Products.Add(Product);
                     _ = _db.SaveChanges();
-                    _navigationManager.Navigate(NavigationKeys.ProductListView, Product);
                 }
                 else
                 {
                     _ = _db.Products.Update(Product);
                     _ = _db.SaveChanges();
-                    _navigationManager.Navigate(NavigationKeys.ProductListView, Product);
                 }
+                var input = new NavigationInput
+                {
+                    Arg = Product,
+                    NavigationFrom = NavigationKeys.ProductEditView,
+                    NavigationTo = _oldView
+                };
+                _navigationManager.Navigate(input);
             });
 
+        /// <summary>
+        /// Редактируемый продукт
+        /// </summary>
         public Product Product
         {
             get => _product;
             set { _product = value; OnPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Отрабатывает при переходе со View
+        /// </summary>
         public void OnNavigatingFrom()
         {
+            _oldView = null;
             Product = null;
         }
 
-        public void OnNavigatingTo(object arg)
+        /// <summary>
+        /// Отрабатывает при входе во View
+        /// </summary>
+        /// <param name="arg"></param>
+        public void OnNavigatingTo(NavigationInput arg)
         {
-            if (arg is Product product)
+            _oldView = arg.NavigationFrom;
+
+            if (arg.Arg is Product product)
             {
                 Product = product;
                 _addNew = false;

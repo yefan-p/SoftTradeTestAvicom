@@ -18,6 +18,8 @@ namespace SoftTradeTestAvicom.ViewModels
 
         private Client _selectedClient;
 
+        private string _oldView;
+
         public ClientListViewModel(INavigationManager navigationManager,
             SoftTradeDbContext softTradeDbContext)
         {
@@ -27,20 +29,37 @@ namespace SoftTradeTestAvicom.ViewModels
             Clients = new ObservableCollection<Client>(_db.Clients.ToList());
         }
 
+        /// <summary>
+        /// Список клиентов
+        /// </summary>
         public ObservableCollection<Client> Clients { get; set; }
 
+        /// <summary>
+        /// Выбранный клиент
+        /// </summary>
         public Client SelectedClient
         {
             get => _selectedClient;
             set { _selectedClient = value; OnPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Вернуться на главное меню
+        /// </summary>
         public Command GoMainMenu =>
             new(obj =>
             {
-                _navigationManager.Navigate(NavigationKeys.MainMenuView);
+                var input = new NavigationInput
+                {
+                    NavigationFrom = NavigationKeys.ClientListView,
+                    NavigationTo = NavigationKeys.MainMenuView
+                };
+                _navigationManager.Navigate(input);
             });
 
+        /// <summary>
+        /// Удалить выбранного клиента
+        /// </summary>
         public Command Delete =>
             new(obj =>
             {
@@ -53,19 +72,39 @@ namespace SoftTradeTestAvicom.ViewModels
             },
             obj => Clients.Count > 0 && SelectedClient != null);
 
+        /// <summary>
+        /// Добавить нового клиента
+        /// </summary>
         public Command Add =>
             new(obj =>
             {
-                _navigationManager.Navigate(NavigationKeys.ClientEditView);
+                var input = new NavigationInput
+                {
+                    NavigationFrom = NavigationKeys.ClientListView,
+                    NavigationTo = NavigationKeys.ClientEditView
+                };
+                _navigationManager.Navigate(input);
             });
 
+        /// <summary>
+        /// Редактирования выбранного клиента
+        /// </summary>
         public Command Edit =>
             new(obj =>
             {
-                _navigationManager.Navigate(NavigationKeys.ClientEditView, SelectedClient);
+                var input = new NavigationInput
+                {
+                    Arg = SelectedClient,
+                    NavigationFrom = NavigationKeys.ClientListView,
+                    NavigationTo = NavigationKeys.ClientEditView
+                };
+                _navigationManager.Navigate(input);
             },
             obj => SelectedClient != null);
 
+        /// <summary>
+        /// Обновление списка
+        /// </summary>
         public Command Refresh =>
             new(obj =>
             {
@@ -73,14 +112,23 @@ namespace SoftTradeTestAvicom.ViewModels
                 OnPropertyChanged(nameof(Clients));
             });
 
+        /// <summary>
+        /// Отрабатывает при переходе со View
+        /// </summary>
         public void OnNavigatingFrom()
         {
-
+            _oldView = null;
         }
 
-        public void OnNavigatingTo(object arg)
+        /// <summary>
+        /// Отрабатывает при входе во View
+        /// </summary>
+        /// <param name="arg"></param>
+        public void OnNavigatingTo(NavigationInput arg)
         {
-            if (arg is Client)
+            _oldView = arg.NavigationFrom;
+
+            if (_oldView == NavigationKeys.ClientEditView)
             {
                 Clients = new ObservableCollection<Client>(_db.Clients.ToList());
                 OnPropertyChanged(nameof(Clients));

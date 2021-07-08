@@ -32,8 +32,10 @@ namespace SoftTradeTestAvicom.Utils
             _viewTypesByViewModelType[typeof(TViewModel)] = typeof(TView);
         }
 
-        public void Navigate(string navigationKey, object arg = null)
+        public void Navigate(NavigationInput arg)
         {
+            string navigationKey = arg.NavigationTo;
+
             if (navigationKey == null)
                 throw new ArgumentNullException("navigationKey");
 
@@ -79,7 +81,7 @@ namespace SoftTradeTestAvicom.Utils
             navigationAware.OnNavigatingFrom();
         }
 
-        private static void InvokeNavigatingTo(object viewModel, object arg)
+        private static void InvokeNavigatingTo(object viewModel, NavigationInput arg)
         {
             var navigationAware = viewModel as INavigationAware;
             if (navigationAware == null)

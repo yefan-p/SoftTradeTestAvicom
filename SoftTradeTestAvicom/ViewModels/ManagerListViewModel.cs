@@ -18,7 +18,9 @@ namespace SoftTradeTestAvicom.ViewModels
 
         private Manager _selectedManager;
 
-        private bool _selectView;
+        private bool _showOkButton;
+
+        private string _oldView;
 
         public ManagerListViewModel(SoftTradeDbContext dbContext, INavigationManager navigationManager)
         {
@@ -28,32 +30,77 @@ namespace SoftTradeTestAvicom.ViewModels
             Managers = new ObservableCollection<Manager>(_db.Managers.ToList());
         }
 
-        public bool SelectView
+        /// <summary>
+        /// Флаг отображения кнопки для выбора записи
+        /// </summary>
+        public bool ShowOkButton
         {
-            get => _selectView;
-            set { _selectView = value; OnPropertyChanged(); }
+            get => _showOkButton;
+            set { _showOkButton = value; OnPropertyChanged(); }
         }
 
-        public Command Select =>
+        /// <summary>
+        /// Выбрать выделенную запись
+        /// </summary>
+        public Command Ok =>
             new(obj =>
             {
-                _navigationManager.Navigate(NavigationKeys.ClientEditView);
-            });
+                var input = new NavigationInput
+                {
+                    NavigationTo = _oldView,
+                    NavigationFrom = NavigationKeys.ManagerListView,
+                    Arg = SelectedManager
+                };
+                _navigationManager.Navigate(input);
+            },
+            obj => SelectedManager != null);
 
+        /// <summary>
+        /// Список менеджеров
+        /// </summary>
         public ObservableCollection<Manager> Managers { get; set; }
 
+        /// <summary>
+        /// Выбранный менеджер
+        /// </summary>
         public Manager SelectedManager
         {
             get => _selectedManager;
             set { _selectedManager = value; OnPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Вернуться на предыдущий экран
+        /// </summary>
         public Command GoBack =>
             new(obj =>
             {
-                _navigationManager.Navigate(NavigationKeys.MainMenuView);
+                var input = new NavigationInput
+                {
+                    NavigationTo = _oldView,
+                    NavigationFrom = NavigationKeys.ManagerListView
+                };
+                _navigationManager.Navigate(input);
+            },
+            obj => _oldView != null);
+
+        /// <summary>
+        /// Вернуться на главное меню
+        /// </summary>
+        public Command GoMain =>
+            new(obj =>
+            {
+                var input = new NavigationInput
+                {
+                    NavigationTo = NavigationKeys.MainMenuView,
+                    NavigationFrom = NavigationKeys.ManagerListView
+                };
+                _navigationManager.Navigate(input);
             });
 
+        /// <summary>
+        /// Удалить выбранного менеджера
+        /// </summary>
         public Command Delete =>
             new(obj =>
             {
@@ -66,19 +113,39 @@ namespace SoftTradeTestAvicom.ViewModels
             },
             obj => Managers.Count > 0 && SelectedManager != null);
 
+        /// <summary>
+        /// Добавить нового менеджера
+        /// </summary>
         public Command Add =>
             new(obj =>
             {
-                _navigationManager.Navigate(NavigationKeys.ManagerEditView);
+                var input = new NavigationInput
+                {
+                    NavigationTo = NavigationKeys.ManagerEditView,
+                    NavigationFrom = NavigationKeys.ManagerListView
+                };
+                _navigationManager.Navigate(input);
             });
 
+        /// <summary>
+        /// Редактирование выбранного менеджера
+        /// </summary>
         public Command Edit =>
             new(obj =>
             {
-                _navigationManager.Navigate(NavigationKeys.ManagerEditView, SelectedManager);
+                var input = new NavigationInput
+                {
+                    NavigationTo = NavigationKeys.ManagerEditView,
+                    NavigationFrom = NavigationKeys.ManagerListView,
+                    Arg = SelectedManager
+                };
+                _navigationManager.Navigate(input);
             },
             obj => SelectedManager != null);
 
+        /// <summary>
+        /// Обновление списка
+        /// </summary>
         public Command Refresh =>
             new(obj =>
             {
@@ -86,19 +153,32 @@ namespace SoftTradeTestAvicom.ViewModels
                 OnPropertyChanged(nameof(Managers));
             });
 
-        public void OnNavigatingTo(object arg)
+        /// <summary>
+        /// Отрабатывает при входе во View
+        /// </summary>
+        /// <param name="arg"></param>
+        public void OnNavigatingTo(NavigationInput arg)
         {
-            if (arg is Manager)
+            _oldView = arg.NavigationFrom;
+
+            if (_oldView == NavigationKeys.ManagerEditView)
             {
                 Managers = new ObservableCollection<Manager>(_db.Managers.ToList());
                 OnPropertyChanged(nameof(Managers));
             }
-            else if(arg is Client)
+            else if (_oldView == NavigationKeys.ClientEditView)
             {
-                SelectView = true;
+                ShowOkButton = true;
             }
         }
 
-        public void OnNavigatingFrom() { }
+        /// <summary>
+        /// Отрабатывает при переходе со View
+        /// </summary>
+        public void OnNavigatingFrom()
+        {
+            ShowOkButton = false;
+            _oldView = null;
+        }
     }
 }

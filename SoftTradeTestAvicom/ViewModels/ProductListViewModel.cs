@@ -13,6 +13,8 @@ namespace SoftTradeTestAvicom.ViewModels
 
         private Product _selectedProduct;
 
+        private string _oldView;
+
         public ProductListViewModel(INavigationManager navigationManager,
             SoftTradeDbContext softTradeDbContext)
         {
@@ -22,20 +24,37 @@ namespace SoftTradeTestAvicom.ViewModels
             Products = new ObservableCollection<Product>(_db.Products.ToList());
         }
 
+        /// <summary>
+        /// Список продуктов
+        /// </summary>
         public ObservableCollection<Product> Products { get; set; }
 
+        /// <summary>
+        /// Выбранный продукт
+        /// </summary>
         public Product SelectedProduct
         {
             get => _selectedProduct;
             set { _selectedProduct = value; OnPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Вернуться на главное меню
+        /// </summary>
         public Command GoMainMenu =>
             new(obj =>
             {
-                _navigationManager.Navigate(NavigationKeys.MainMenuView);
+                var input = new NavigationInput
+                {
+                    NavigationFrom = NavigationKeys.ProductListView,
+                    NavigationTo = NavigationKeys.MainMenuView
+                };
+                _navigationManager.Navigate(input);
             });
 
+        /// <summary>
+        /// Удалить выбранный продукт
+        /// </summary>
         public Command Delete =>
             new(obj =>
             {
@@ -48,19 +67,39 @@ namespace SoftTradeTestAvicom.ViewModels
             },
             obj => Products.Count > 0 && SelectedProduct != null);
 
+        /// <summary>
+        /// Добавить новый продукт
+        /// </summary>
         public Command Add =>
             new(obj =>
             {
-                _navigationManager.Navigate(NavigationKeys.ProductEditView);
+                var input = new NavigationInput
+                {
+                    NavigationTo = NavigationKeys.ProductEditView,
+                    NavigationFrom = NavigationKeys.ProductListView
+                };
+                _navigationManager.Navigate(input);
             });
 
+        /// <summary>
+        /// Редактирования выбранного продукта
+        /// </summary>
         public Command Edit =>
             new(obj =>
             {
-                _navigationManager.Navigate(NavigationKeys.ProductEditView, SelectedProduct);
+                var input = new NavigationInput
+                {
+                    NavigationTo = NavigationKeys.ProductEditView,
+                    NavigationFrom = NavigationKeys.ProductListView,
+                    Arg = SelectedProduct
+                };
+                _navigationManager.Navigate(input);
             },
             obj => SelectedProduct != null);
 
+        /// <summary>
+        /// Обновление списка
+        /// </summary>
         public Command Refresh =>
             new(obj =>
             {
@@ -68,14 +107,23 @@ namespace SoftTradeTestAvicom.ViewModels
                 OnPropertyChanged(nameof(Products));
             });
 
+        /// <summary>
+        /// Отрабатывает при переходе со View
+        /// </summary>
         public void OnNavigatingFrom()
         {
-            
+            _oldView = null;
         }
 
-        public void OnNavigatingTo(object arg)
+        /// <summary>
+        /// Отрабатывает при входе во View
+        /// </summary>
+        /// <param name="arg"></param>
+        public void OnNavigatingTo(NavigationInput arg)
         {
-            if (arg is Product)
+            _oldView = arg.NavigationFrom;
+
+            if (_oldView == NavigationKeys.ProductEditView)
             {
                 Products = new ObservableCollection<Product>(_db.Products.ToList());
                 OnPropertyChanged(nameof(Products));

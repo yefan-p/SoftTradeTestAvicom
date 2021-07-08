@@ -16,15 +16,12 @@ namespace SoftTradeTestAvicom.Utils
             if ((value is bool arg) && arg)
                 return "Visible";
             else
-                return "Hidden";
+                return "Collapsed";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Visibility arg && arg == Visibility.Visible)
-                return true;
-            else
-                return false;
+            return value is Visibility arg && arg == Visibility.Visible;
         }
     }
 }

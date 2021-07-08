@@ -19,6 +19,8 @@ namespace SoftTradeTestAvicom.ViewModels
 
         private bool _addNew;
 
+        private string _oldView;
+
         public ClientEditViewModel(INavigationManager navigationManager,
             SoftTradeDbContext softTradeDbContext)
         {
@@ -26,18 +28,32 @@ namespace SoftTradeTestAvicom.ViewModels
             _db = softTradeDbContext;
         }
 
+        /// <summary>
+        /// Редактируемый клиент
+        /// </summary>
         public Client Client
         {
             get => _client;
             set { _client = value; OnPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Отменить изменения
+        /// </summary>
         public Command Cancel =>
             new(obj =>
             {
-                _navigationManager.Navigate(NavigationKeys.ClientListView);
+                var input = new NavigationInput
+                {
+                    NavigationFrom = NavigationKeys.ClientEditView,
+                    NavigationTo = _oldView
+                };
+                _navigationManager.Navigate(input);
             });
 
+        /// <summary>
+        /// Сохранить изменения
+        /// </summary>
         public Command Ok =>
             new(obj =>
             {
@@ -45,24 +61,39 @@ namespace SoftTradeTestAvicom.ViewModels
                 {
                     _ = _db.Clients.Add(Client);
                     _ = _db.SaveChanges();
-                    _navigationManager.Navigate(NavigationKeys.ClientListView, Client);
                 }
                 else
                 {
                     _ = _db.Clients.Update(Client);
                     _ = _db.SaveChanges();
-                    _navigationManager.Navigate(NavigationKeys.ClientListView, Client);
                 }
+                var input = new NavigationInput
+                {
+                    Arg = Client,
+                    NavigationFrom = NavigationKeys.ClientEditView,
+                    NavigationTo = _oldView
+                };
+                _navigationManager.Navigate(input);
             });
 
+        /// <summary>
+        /// Отрабатывает при переходе со View
+        /// </summary>
         public void OnNavigatingFrom()
         {
             Client = null;
+            _oldView = null;
         }
 
-        public void OnNavigatingTo(object arg)
+        /// <summary>
+        /// Отрабатывает при входе во View
+        /// </summary>
+        /// <param name="arg"></param>
+        public void OnNavigatingTo(NavigationInput arg)
         {
-            if (arg is Client client)
+            _oldView = arg.NavigationFrom;
+
+            if (arg.Arg is Client client)
             {
                 Client = client;
                 _addNew = false;

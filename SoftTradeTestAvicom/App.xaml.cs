@@ -49,7 +49,11 @@ namespace SoftTradeTestAvicom
             navigator.Register<ClientListViewModel, ClientListView>(clientListViewModel, NavigationKeys.ClientListView);
             navigator.Register<ClientEditViewModel, ClientEditView>(clientEditViewModel, NavigationKeys.ClientEditView);
 
-            navigator.Navigate(NavigationKeys.MainMenuView);
+            var input = new NavigationInput
+            {
+                NavigationTo = NavigationKeys.MainMenuView
+            };
+            navigator.Navigate(input);
         }
 
         private void ConfigureServices(ServiceCollection services)

@@ -15,6 +15,8 @@ namespace SoftTradeTestAvicom.ViewModels
 
         private readonly SoftTradeDbContext _db;
 
+        private string _oldView;
+
         private Manager _manager;
 
         private bool _addNew;
@@ -25,12 +27,24 @@ namespace SoftTradeTestAvicom.ViewModels
             _db = softTradeDbContext;
         }
 
+        /// <summary>
+        /// Отменить изменения
+        /// </summary>
         public Command Cancel =>
             new(obj =>
             {
-                _navigationManager.Navigate(NavigationKeys.ManagerListView);
-            });
+                var input = new NavigationInput
+                {
+                    NavigationTo = _oldView,
+                    NavigationFrom = NavigationKeys.ManagerEditView
+                };
+                _navigationManager.Navigate(input);
+            },
+            obj => _oldView != null);
 
+        /// <summary>
+        /// Сохранить изменения
+        /// </summary>
         public Command Ok =>
             new(obj =>
             {
@@ -38,25 +52,39 @@ namespace SoftTradeTestAvicom.ViewModels
                 {
                     _ = _db.Managers.Add(Manager);
                     _ = _db.SaveChanges();
-                    _navigationManager.Navigate(NavigationKeys.ManagerListView, Manager);
                 }
                 else
                 {
                     _ = _db.Managers.Update(Manager);
                     _ = _db.SaveChanges();
-                    _navigationManager.Navigate(NavigationKeys.ManagerListView, Manager);
                 }
+                var input = new NavigationInput
+                {
+                    NavigationFrom = NavigationKeys.ManagerEditView,
+                    NavigationTo = _oldView,
+                    Arg = Manager
+                };
+                _navigationManager.Navigate(input);
             });
 
+        /// <summary>
+        /// Редактируемый менеджер
+        /// </summary>
         public Manager Manager
         {
             get => _manager;
             set { _manager = value; OnPropertyChanged(); }
         }
 
-        public void OnNavigatingTo(object arg)
+        /// <summary>
+        /// Отрабатывает при входе во View
+        /// </summary>
+        /// <param name="arg"></param>
+        public void OnNavigatingTo(NavigationInput arg)
         {
-            if (arg is Manager manager)
+            _oldView = arg.NavigationFrom;
+
+            if (arg.Arg is Manager manager)
             {
                 Manager = manager;
                 _addNew = false;
@@ -68,8 +96,12 @@ namespace SoftTradeTestAvicom.ViewModels
             }
         }
 
+        /// <summary>
+        /// Отрабатывает при переходе со View
+        /// </summary>
         public void OnNavigatingFrom()
         {
+            _oldView = null;
             Manager = null;
         }
     }

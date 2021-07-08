@@ -4,7 +4,7 @@ namespace SoftTradeTestAvicom.Utils
 {
     public interface INavigationManager
     {
-        void Navigate(string navigationKey, object arg = null);
+        void Navigate(NavigationInput arg);
 
         void Register<TViewModel, TView>(TViewModel viewModel, string navigationKey)
             where TViewModel : class
