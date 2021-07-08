@@ -1,11 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace SoftTradeTestAvicom.Models
 {
     public class SoftTradeDbContext : DbContext
@@ -19,5 +13,7 @@ namespace SoftTradeTestAvicom.Models
         public DbSet<Manager> Managers { get; set; }
 
         public DbSet<Product> Products { get; set; }
+
+        public DbSet<Client> Clients { get; set; }
     }
 }

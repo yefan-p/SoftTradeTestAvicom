@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="SoftTradeTestAvicom.Views.ClientEditView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SoftTradeTestAvicom.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <StackPanel>
+        <TextBlock>Client edit</TextBlock>
+        <Button Command="{Binding Cancel}">Cancel</Button>
+        <Button Command="{Binding Ok}">OK</Button>
+
+        <StackPanel>
+            <TextBlock>Product name: </TextBlock>
+            <TextBox Text="{Binding Client.Name}"/>
+            <TextBlock>Crucial: </TextBlock>
+            <CheckBox IsChecked="{Binding Client.Status}"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock>Manager:</TextBlock>
+                <TextBlock Text="{Binding Client.Manager.Name}"/>
+                <Button>Select manager</Button>
+            </StackPanel>
+
+        </StackPanel>
+    </StackPanel>
+</UserControl>

@@ -9,6 +9,6 @@
     <StackPanel>
         <Button Command="{Binding GoManagerList}">Manager List</Button>
         <Button Command="{Binding GoProductList}">Product List</Button>
-        <Button>Client List</Button>
+        <Button Command="{Binding GoClientList}">Client List</Button>
     </StackPanel>
 </UserControl>

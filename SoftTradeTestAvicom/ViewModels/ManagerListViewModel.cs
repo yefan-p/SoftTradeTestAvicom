@@ -18,6 +18,8 @@ namespace SoftTradeTestAvicom.ViewModels
 
         private Manager _selectedManager;
 
+        private bool _selectView;
+
         public ManagerListViewModel(SoftTradeDbContext dbContext, INavigationManager navigationManager)
         {
             _db = dbContext;
@@ -25,6 +27,18 @@ namespace SoftTradeTestAvicom.ViewModels
 
             Managers = new ObservableCollection<Manager>(_db.Managers.ToList());
         }
+
+        public bool SelectView
+        {
+            get => _selectView;
+            set { _selectView = value; OnPropertyChanged(); }
+        }
+
+        public Command Select =>
+            new(obj =>
+            {
+                _navigationManager.Navigate(NavigationKeys.ClientEditView);
+            });
 
         public ObservableCollection<Manager> Managers { get; set; }
 
@@ -34,7 +48,7 @@ namespace SoftTradeTestAvicom.ViewModels
             set { _selectedManager = value; OnPropertyChanged(); }
         }
 
-        public Command GoMainMenu =>
+        public Command GoBack =>
             new(obj =>
             {
                 _navigationManager.Navigate(NavigationKeys.MainMenuView);
@@ -78,6 +92,10 @@ namespace SoftTradeTestAvicom.ViewModels
             {
                 Managers = new ObservableCollection<Manager>(_db.Managers.ToList());
                 OnPropertyChanged(nameof(Managers));
+            }
+            else if(arg is Client)
+            {
+                SelectView = true;
             }
         }
 

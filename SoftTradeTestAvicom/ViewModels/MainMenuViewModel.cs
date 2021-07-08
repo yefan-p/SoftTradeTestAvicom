@@ -28,5 +28,11 @@ namespace SoftTradeTestAvicom.ViewModels
             {
                 _navigationManager.Navigate(NavigationKeys.ProductListView);
             });
+
+        public Command GoClientList =>
+            new(obj =>
+            {
+                _navigationManager.Navigate(NavigationKeys.ClientListView);
+            });
     }
 }
