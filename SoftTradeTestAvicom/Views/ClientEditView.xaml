@@ -10,18 +10,33 @@
         <TextBlock>Client edit</TextBlock>
         <Button Command="{Binding Cancel}">Cancel</Button>
         <Button Command="{Binding Ok}">OK</Button>
-
         <StackPanel>
-            <TextBlock>Product name: </TextBlock>
+            <TextBlock>Client name: </TextBlock>
             <TextBox Text="{Binding Client.Name}"/>
             <TextBlock>Crucial: </TextBlock>
             <CheckBox IsChecked="{Binding Client.Status}"/>
             <StackPanel Orientation="Horizontal">
                 <TextBlock>Manager:</TextBlock>
                 <TextBlock Text="{Binding Client.Manager.Name}"/>
-                <Button>Select manager</Button>
+                <Button Command="{Binding SelectManager}">Select manager</Button>
             </StackPanel>
-
+            <StackPanel>
+                <TextBlock Text="Products: "/>
+                <Button Command="{Binding AddProduct}">Add product</Button>
+                <Button Command="{Binding DeleteProduct}">Delete product</Button>
+                <ListBox ItemsSource="{Binding Products}" SelectedItem="{Binding SelectedProduct}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontSize="18" Text="Product name: " Margin="3" />
+                                <TextBlock FontSize="18" Text="{Binding Path=Name}" Margin="3"/>
+                                <TextBlock FontSize="18" Text=";    Price: " Margin="3"/>
+                                <TextBlock FontSize="18" Text="{Binding Path=Price}" Margin="3"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
         </StackPanel>
     </StackPanel>
 </UserControl>

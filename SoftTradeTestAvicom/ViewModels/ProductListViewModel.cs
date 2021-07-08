@@ -15,6 +15,8 @@ namespace SoftTradeTestAvicom.ViewModels
 
         private string _oldView;
 
+        private bool _showOkButton;
+
         public ProductListViewModel(INavigationManager navigationManager,
             SoftTradeDbContext softTradeDbContext)
         {
@@ -23,6 +25,48 @@ namespace SoftTradeTestAvicom.ViewModels
 
             Products = new ObservableCollection<Product>(_db.Products.ToList());
         }
+
+        /// <summary>
+        /// Флаг отображения кнопки для выбора записи
+        /// </summary>
+        public bool ShowOkButton
+        {
+            get => _showOkButton;
+            set { _showOkButton = value; OnPropertyChanged(); }
+        }
+
+        /// <summary>
+        /// Вернуться на предыдущий экран
+        /// </summary>
+        public Command GoBack =>
+            new(obj =>
+            {
+                var input = new NavigationInput
+                {
+                    NavigationTo = _oldView,
+                    NavigationFrom = NavigationKeys.ProductListView
+                };
+                _navigationManager.Navigate(input);
+                ShowOkButton = false;
+            },
+            obj => _oldView != null);
+
+        /// <summary>
+        /// Выбрать выделенную запись
+        /// </summary>
+        public Command Ok =>
+            new(obj =>
+            {
+                var input = new NavigationInput
+                {
+                    NavigationTo = _oldView,
+                    NavigationFrom = NavigationKeys.ProductListView,
+                    Arg = SelectedProduct
+                };
+                _navigationManager.Navigate(input);
+                ShowOkButton = false;
+            },
+            obj => SelectedProduct != null);
 
         /// <summary>
         /// Список продуктов
@@ -50,6 +94,7 @@ namespace SoftTradeTestAvicom.ViewModels
                     NavigationTo = NavigationKeys.MainMenuView
                 };
                 _navigationManager.Navigate(input);
+                ShowOkButton = false;
             });
 
         /// <summary>
@@ -79,6 +124,7 @@ namespace SoftTradeTestAvicom.ViewModels
                     NavigationFrom = NavigationKeys.ProductListView
                 };
                 _navigationManager.Navigate(input);
+                ShowOkButton = false;
             });
 
         /// <summary>
@@ -94,6 +140,7 @@ namespace SoftTradeTestAvicom.ViewModels
                     Arg = SelectedProduct
                 };
                 _navigationManager.Navigate(input);
+                ShowOkButton = false;
             },
             obj => SelectedProduct != null);
 
@@ -112,7 +159,7 @@ namespace SoftTradeTestAvicom.ViewModels
         /// </summary>
         public void OnNavigatingFrom()
         {
-            _oldView = null;
+            SelectedProduct = null;
         }
 
         /// <summary>
@@ -127,6 +174,10 @@ namespace SoftTradeTestAvicom.ViewModels
             {
                 Products = new ObservableCollection<Product>(_db.Products.ToList());
                 OnPropertyChanged(nameof(Products));
+            }
+            else if (_oldView == NavigationKeys.ClientEditView)
+            {
+                ShowOkButton = true;
             }
         }
     }

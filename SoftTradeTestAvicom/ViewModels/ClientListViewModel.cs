@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 
+using Microsoft.EntityFrameworkCore;
+
 using SoftTradeTestAvicom.Utils;
 using SoftTradeTestAvicom.Models;
 
@@ -26,7 +28,7 @@ namespace SoftTradeTestAvicom.ViewModels
             _navigationManager = navigationManager;
             _db = softTradeDbContext;
 
-            Clients = new ObservableCollection<Client>(_db.Clients.ToList());
+            Clients = new ObservableCollection<Client>(_db.Clients.Include(p => p.Products).ToList());
         }
 
         /// <summary>

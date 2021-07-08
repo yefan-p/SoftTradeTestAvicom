@@ -52,6 +52,7 @@ namespace SoftTradeTestAvicom.ViewModels
                     Arg = SelectedManager
                 };
                 _navigationManager.Navigate(input);
+                ShowOkButton = false;
             },
             obj => SelectedManager != null);
 
@@ -81,6 +82,7 @@ namespace SoftTradeTestAvicom.ViewModels
                     NavigationFrom = NavigationKeys.ManagerListView
                 };
                 _navigationManager.Navigate(input);
+                ShowOkButton = false;
             },
             obj => _oldView != null);
 
@@ -96,6 +98,7 @@ namespace SoftTradeTestAvicom.ViewModels
                     NavigationFrom = NavigationKeys.ManagerListView
                 };
                 _navigationManager.Navigate(input);
+                ShowOkButton = false;
             });
 
         /// <summary>
@@ -125,6 +128,7 @@ namespace SoftTradeTestAvicom.ViewModels
                     NavigationFrom = NavigationKeys.ManagerListView
                 };
                 _navigationManager.Navigate(input);
+                ShowOkButton = false;
             });
 
         /// <summary>
@@ -140,6 +144,7 @@ namespace SoftTradeTestAvicom.ViewModels
                     Arg = SelectedManager
                 };
                 _navigationManager.Navigate(input);
+                ShowOkButton = false;
             },
             obj => SelectedManager != null);
 
@@ -177,8 +182,7 @@ namespace SoftTradeTestAvicom.ViewModels
         /// </summary>
         public void OnNavigatingFrom()
         {
-            ShowOkButton = false;
-            _oldView = null;
+            SelectedManager = null;
         }
     }
 }

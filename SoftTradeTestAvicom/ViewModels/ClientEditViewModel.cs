@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 using SoftTradeTestAvicom.Utils;
 using SoftTradeTestAvicom.Models;
+using System.Collections.ObjectModel;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace SoftTradeTestAvicom.ViewModels
 {
@@ -21,11 +23,28 @@ namespace SoftTradeTestAvicom.ViewModels
 
         private string _oldView;
 
+        private Product _selectedProduct;
+
         public ClientEditViewModel(INavigationManager navigationManager,
             SoftTradeDbContext softTradeDbContext)
         {
             _navigationManager = navigationManager;
             _db = softTradeDbContext;
+            Products = new ObservableHashSet<Product>();
+        }
+
+        /// <summary>
+        /// Список продуктов клиента
+        /// </summary>
+        public ObservableHashSet<Product> Products { get; set; }
+
+        /// <summary>
+        /// Выбранный продукт
+        /// </summary>
+        public Product SelectedProduct
+        {
+            get => _selectedProduct;
+            set { _selectedProduct = value; OnPropertyChanged(); }
         }
 
         /// <summary>
@@ -38,6 +57,44 @@ namespace SoftTradeTestAvicom.ViewModels
         }
 
         /// <summary>
+        /// Добавить продукт клиенту
+        /// </summary>
+        public Command AddProduct =>
+            new(obj =>
+            {
+                var input = new NavigationInput
+                {
+                    NavigationTo = NavigationKeys.ProductListView,
+                    NavigationFrom = NavigationKeys.ClientEditView
+                };
+                _navigationManager.Navigate(input);
+            });
+
+        /// <summary>
+        /// Удалить продукт у клиента
+        /// </summary>
+        public Command DeleteProduct =>
+            new(obj =>
+            {
+                Products.Remove(SelectedProduct);
+                OnPropertyChanged(nameof(Products));
+            });
+
+        /// <summary>
+        /// Выбрать менеджера
+        /// </summary>
+        public Command SelectManager =>
+            new(obj =>
+            {
+                var input = new NavigationInput
+                {
+                    NavigationTo = NavigationKeys.ManagerListView,
+                    NavigationFrom = NavigationKeys.ClientEditView
+                };
+                _navigationManager.Navigate(input);
+            });
+
+        /// <summary>
         /// Отменить изменения
         /// </summary>
         public Command Cancel =>
@@ -46,7 +103,7 @@ namespace SoftTradeTestAvicom.ViewModels
                 var input = new NavigationInput
                 {
                     NavigationFrom = NavigationKeys.ClientEditView,
-                    NavigationTo = _oldView
+                    NavigationTo = NavigationKeys.ClientListView
                 };
                 _navigationManager.Navigate(input);
             });
@@ -57,6 +114,7 @@ namespace SoftTradeTestAvicom.ViewModels
         public Command Ok =>
             new(obj =>
             {
+                Client.Products = Products;
                 if (_addNew)
                 {
                     _ = _db.Clients.Add(Client);
@@ -71,18 +129,18 @@ namespace SoftTradeTestAvicom.ViewModels
                 {
                     Arg = Client,
                     NavigationFrom = NavigationKeys.ClientEditView,
-                    NavigationTo = _oldView
+                    NavigationTo = NavigationKeys.ClientListView
                 };
                 _navigationManager.Navigate(input);
-            });
+            },
+            obj => Client.ManagerId != 0);
 
         /// <summary>
         /// Отрабатывает при переходе со View
         /// </summary>
         public void OnNavigatingFrom()
         {
-            Client = null;
-            _oldView = null;
+            
         }
 
         /// <summary>
@@ -97,11 +155,22 @@ namespace SoftTradeTestAvicom.ViewModels
             {
                 Client = client;
                 _addNew = false;
+                Products = new ObservableHashSet<Product>(Client.Products);
             }
-            else
+            else if (arg.Arg is Manager manager)
+            {
+                Client.ManagerId = manager.Id;
+                Client.Manager = manager;
+            }
+            else if (arg.Arg is Product product)
+            {
+                Products.Add(product);
+            }
+            else if (Client == null || _oldView == NavigationKeys.ClientListView)
             {
                 _addNew = true;
                 Client = new Client();
+                Products = new ObservableHashSet<Product>();
             }
         }
     }

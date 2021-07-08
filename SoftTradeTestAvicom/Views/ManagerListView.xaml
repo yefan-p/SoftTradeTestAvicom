@@ -13,8 +13,8 @@
     <StackPanel>
         <Label>Manager List</Label>
         <Button Command="{Binding GoMain}">Main menu</Button>
-        <Button Command="{Binding GoBack}">Back</Button>
-        <Button Command="{Binding Ok}" Visibility="{Binding ShowOkButton, Converter={StaticResource BooleanVisibilityConverter}}">Select</Button>
+        <Button Command="{Binding GoBack}" Visibility="{Binding ShowOkButton, Converter={StaticResource BooleanVisibilityConverter}}">Back</Button>
+        <Button Command="{Binding Ok}" Visibility="{Binding ShowOkButton, Converter={StaticResource BooleanVisibilityConverter}}">Ok</Button>
         <Button Command="{Binding Add}">Add</Button>
         <Button Command="{Binding Edit}">Edit</Button>
         <Button Command="{Binding Delete}" CommandParameter="{Binding SelectedManager}">Delete</Button>

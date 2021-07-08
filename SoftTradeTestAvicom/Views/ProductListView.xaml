@@ -3,12 +3,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:utility="clr-namespace:SoftTradeTestAvicom.Utils"
              xmlns:local="clr-namespace:SoftTradeTestAvicom.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <utility:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter" />
+    </UserControl.Resources>
     <StackPanel>
         <Label>Product List</Label>
         <Button Command="{Binding GoMainMenu}">Main menu</Button>
+        <Button Command="{Binding GoBack}" Visibility="{Binding ShowOkButton, Converter={StaticResource BooleanVisibilityConverter}}">Back</Button>
+        <Button Command="{Binding Ok}" Visibility="{Binding ShowOkButton, Converter={StaticResource BooleanVisibilityConverter}}">Ok</Button>
         <Button Command="{Binding Add}">Add</Button>
         <Button Command="{Binding Edit}">Edit</Button>
         <Button Command="{Binding Delete}" CommandParameter="{Binding SelectedProduct}">Delete</Button>
