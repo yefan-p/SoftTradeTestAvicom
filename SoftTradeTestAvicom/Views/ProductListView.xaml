@@ -13,12 +13,13 @@
     <StackPanel>
         <Label>Product List</Label>
         <Button Command="{Binding GoMainMenu}">Main menu</Button>
-        <Button Command="{Binding GoBack}" Visibility="{Binding ShowOkButton, Converter={StaticResource BooleanVisibilityConverter}}">Back</Button>
+        <Button Command="{Binding GoBack}" Visibility="{Binding ShowBackButton, Converter={StaticResource BooleanVisibilityConverter}}">Back</Button>
         <Button Command="{Binding Ok}" Visibility="{Binding ShowOkButton, Converter={StaticResource BooleanVisibilityConverter}}">Ok</Button>
         <Button Command="{Binding Add}">Add</Button>
         <Button Command="{Binding Edit}">Edit</Button>
         <Button Command="{Binding Delete}" CommandParameter="{Binding SelectedProduct}">Delete</Button>
         <Button Command="{Binding Refresh}">Refresh</Button>
+        <Button Command="{Binding ShowProductsClients}">Show product's clients</Button>
         <ListBox Grid.Column="0" ItemsSource="{Binding Products}" SelectedItem="{Binding SelectedProduct}">
             <ListBox.ItemTemplate>
                 <DataTemplate>

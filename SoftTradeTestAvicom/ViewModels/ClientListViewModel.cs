@@ -22,6 +22,8 @@ namespace SoftTradeTestAvicom.ViewModels
 
         private string _oldView;
 
+        private bool _showBackButton;
+
         public ClientListViewModel(INavigationManager navigationManager,
             SoftTradeDbContext softTradeDbContext)
         {
@@ -30,6 +32,76 @@ namespace SoftTradeTestAvicom.ViewModels
 
             Clients = new ObservableCollection<Client>(_db.Clients.Include(p => p.Products).ToList());
         }
+
+        /// <summary>
+        /// Флаг отображения кнопки "Назад"
+        /// </summary>
+        public bool ShowBackButton
+        {
+            get => _showBackButton;
+            set { _showBackButton = value; OnPropertyChanged(); }
+        }
+
+        /// <summary>
+        /// Вернуться на предыдущий экран
+        /// </summary>
+        public Command GoBack =>
+            new(obj =>
+            {
+                var input = new NavigationInput
+                {
+                    NavigationTo = _oldView,
+                    NavigationFrom = NavigationKeys.ClientListView
+                };
+                _navigationManager.Navigate(input);
+            },
+            obj => _oldView != null);
+
+        /// <summary>
+        /// Показывать только обычных клиентов
+        /// </summary>
+        public Command ShowNonCrucial =>
+            new(obj =>
+            {
+                var query =
+                    from el in _db.Clients
+                    where !el.Status
+                    select el;
+
+                Clients = new ObservableCollection<Client>(query.ToList());
+                OnPropertyChanged(nameof(Clients));
+            });
+
+        /// <summary>
+        /// Показывать только ключевых клиентов
+        /// </summary>
+        public Command ShowCrucial =>
+            new(obj =>
+            {
+                var query =
+                    from el in _db.Clients
+                    where el.Status
+                    select el;
+
+                Clients = new ObservableCollection<Client>(query.ToList());
+                OnPropertyChanged(nameof(Clients));
+            });
+
+        /// <summary>
+        /// Показать продукты клиента
+        /// </summary>
+        public Command ShowClientsProducts =>
+            new(obj =>
+            {
+                var input = new NavigationInput
+                {
+                    Arg = SelectedClient,
+                    NavigationTo = NavigationKeys.ProductListView,
+                    NavigationFrom = NavigationKeys.ClientListView
+                };
+                _navigationManager.Navigate(input);
+            },
+            obj => SelectedClient != null);
 
         /// <summary>
         /// Список клиентов
@@ -119,7 +191,8 @@ namespace SoftTradeTestAvicom.ViewModels
         /// </summary>
         public void OnNavigatingFrom()
         {
-            _oldView = null;
+            SelectedClient = null;
+            ShowBackButton = false;
         }
 
         /// <summary>
@@ -130,9 +203,33 @@ namespace SoftTradeTestAvicom.ViewModels
         {
             _oldView = arg.NavigationFrom;
 
-            if (_oldView == NavigationKeys.ClientEditView)
+            if (_oldView == NavigationKeys.ClientEditView || _oldView == NavigationKeys.MainMenuView)
             {
                 Clients = new ObservableCollection<Client>(_db.Clients.ToList());
+                OnPropertyChanged(nameof(Clients));
+            }
+            else if (_oldView == NavigationKeys.ProductListView && arg.Arg is Product product)
+            {
+                ShowBackButton = true;
+
+                var query =
+                    from el in _db.Clients
+                    where el.Products.Contains(product)
+                    select el;
+
+                Clients = new ObservableCollection<Client>(query.ToList());
+                OnPropertyChanged(nameof(Clients));
+            }
+            else if (_oldView == NavigationKeys.ManagerListView && arg.Arg is Manager manager)
+            {
+                ShowBackButton = true;
+
+                var query =
+                    from el in _db.Clients
+                    where el.ManagerId == manager.Id
+                    select el;
+
+                Clients = new ObservableCollection<Client>(query.ToList());
                 OnPropertyChanged(nameof(Clients));
             }
         }

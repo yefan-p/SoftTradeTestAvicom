@@ -31,6 +31,22 @@ namespace SoftTradeTestAvicom.ViewModels
         }
 
         /// <summary>
+        /// Отобразить клиентов выбранного менеджера
+        /// </summary>
+        public Command ShowManagersClients =>
+            new(obj =>
+            {
+                var input = new NavigationInput
+                {
+                    NavigationTo = NavigationKeys.ClientListView,
+                    NavigationFrom = NavigationKeys.ManagerListView,
+                    Arg = SelectedManager
+                };
+                _navigationManager.Navigate(input);
+            },
+            obj => SelectedManager != null);
+
+        /// <summary>
         /// Флаг отображения кнопки для выбора записи
         /// </summary>
         public bool ShowOkButton
@@ -52,7 +68,6 @@ namespace SoftTradeTestAvicom.ViewModels
                     Arg = SelectedManager
                 };
                 _navigationManager.Navigate(input);
-                ShowOkButton = false;
             },
             obj => SelectedManager != null);
 
@@ -82,7 +97,6 @@ namespace SoftTradeTestAvicom.ViewModels
                     NavigationFrom = NavigationKeys.ManagerListView
                 };
                 _navigationManager.Navigate(input);
-                ShowOkButton = false;
             },
             obj => _oldView != null);
 
@@ -98,7 +112,6 @@ namespace SoftTradeTestAvicom.ViewModels
                     NavigationFrom = NavigationKeys.ManagerListView
                 };
                 _navigationManager.Navigate(input);
-                ShowOkButton = false;
             });
 
         /// <summary>
@@ -128,7 +141,6 @@ namespace SoftTradeTestAvicom.ViewModels
                     NavigationFrom = NavigationKeys.ManagerListView
                 };
                 _navigationManager.Navigate(input);
-                ShowOkButton = false;
             });
 
         /// <summary>
@@ -144,7 +156,6 @@ namespace SoftTradeTestAvicom.ViewModels
                     Arg = SelectedManager
                 };
                 _navigationManager.Navigate(input);
-                ShowOkButton = false;
             },
             obj => SelectedManager != null);
 
@@ -183,6 +194,7 @@ namespace SoftTradeTestAvicom.ViewModels
         public void OnNavigatingFrom()
         {
             SelectedManager = null;
+            ShowOkButton = false;
         }
     }
 }

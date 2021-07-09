@@ -3,24 +3,34 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:utility="clr-namespace:SoftTradeTestAvicom.Utils"
              xmlns:local="clr-namespace:SoftTradeTestAvicom.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <utility:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter" />
+    </UserControl.Resources>
     <StackPanel>
         <Label>Client List</Label>
         <Button Command="{Binding GoMainMenu}">Main menu</Button>
+        <Button Command="{Binding GoBack}" Visibility="{Binding ShowBackButton, Converter={StaticResource BooleanVisibilityConverter}}">Back</Button>
         <Button Command="{Binding Add}">Add</Button>
         <Button Command="{Binding Edit}">Edit</Button>
         <Button Command="{Binding Delete}" CommandParameter="{Binding SelectedClient}">Delete</Button>
         <Button Command="{Binding Refresh}">Refresh</Button>
+        <Button Command="{Binding ShowCrucial}">Show crucial</Button>
+        <Button Command="{Binding ShowNonCrucial}">Show not crucial</Button>
+        <Button Command="{Binding ShowClientsProducts}">Show client's products</Button>
         <ListBox Grid.Column="0" ItemsSource="{Binding Clients}" SelectedItem="{Binding SelectedClient}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Margin="5">
                         <TextBlock FontSize="18" Text="Client: " Margin="3" />
                         <TextBlock FontSize="18" Text="{Binding Path=Name}" Margin="3"/>
-                        <TextBlock FontSize="18" Text=";    Сrucial : " Margin="3"/>
+                        <TextBlock FontSize="18" Text=";    Crucial : " Margin="3"/>
                         <CheckBox FontSize="18" IsChecked="{Binding Status}" IsEnabled="False"/>
+                        <TextBlock FontSize="18" Text=";    Manager: " Margin="3"/>
+                        <TextBlock FontSize="18" Text="{Binding Manager.Name}"/>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

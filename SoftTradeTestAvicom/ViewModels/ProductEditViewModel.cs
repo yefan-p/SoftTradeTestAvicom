@@ -21,6 +21,8 @@ namespace SoftTradeTestAvicom.ViewModels
 
         private string _oldView;
 
+        private bool _showSubscripPeriod;
+
         public ProductEditViewModel(SoftTradeDbContext softTradeDbContext,
             INavigationManager navigationManager)
         {
@@ -31,6 +33,38 @@ namespace SoftTradeTestAvicom.ViewModels
         public static List<string> ProductType => new() { "Подписка", "Постоянная лицензия" };
 
         public static List<string> SubscriptionPeriod => new() { "Месяц", "Квартал", "Год" };
+
+        /// <summary>
+        /// Флаг отображения выбора периода подписки
+        /// </summary>
+        public bool ShowSubscripPeriod
+        {
+            get => _showSubscripPeriod;
+            set { _showSubscripPeriod = value; OnPropertyChanged(); }
+        }
+
+        /// <summary>
+        /// Выбранный продукт
+        /// </summary>
+        public string SelectedProductType
+        {
+            get => Product.Type;
+            set 
+            { 
+                Product.Type = value;
+                if (value == ProductType[1])
+                {
+                    ShowSubscripPeriod = false;
+                    Product.SubscriptionPeriod = null;
+                }
+                else 
+                {
+                    ShowSubscripPeriod = true;
+                    Product.SubscriptionPeriod = SubscriptionPeriod[0];
+                }
+                OnPropertyChanged(nameof(Product));
+            }
+        }
 
         /// <summary>
         /// Отменить изменения
@@ -101,6 +135,7 @@ namespace SoftTradeTestAvicom.ViewModels
             {
                 Product = product;
                 _addNew = false;
+                SelectedProductType = product.Type;
             }
             else
             {
@@ -108,8 +143,8 @@ namespace SoftTradeTestAvicom.ViewModels
                 Product = new Product
                 {
                     SubscriptionPeriod = SubscriptionPeriod[0],
-                    Type = ProductType[0]
                 };
+                SelectedProductType = ProductType[0];
             }
         }
     }

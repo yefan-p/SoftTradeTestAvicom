@@ -19,6 +19,7 @@
         <Button Command="{Binding Edit}">Edit</Button>
         <Button Command="{Binding Delete}" CommandParameter="{Binding SelectedManager}">Delete</Button>
         <Button Command="{Binding Refresh}">Refresh</Button>
+        <Button Command="{Binding ShowManagersClients}">Show manager's clients</Button>
         <ListBox ItemsSource="{Binding Managers}" SelectedItem="{Binding SelectedManager}">
             <ListBox.ItemTemplate>
                 <DataTemplate>

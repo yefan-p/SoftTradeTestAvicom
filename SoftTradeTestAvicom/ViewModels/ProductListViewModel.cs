@@ -17,6 +17,8 @@ namespace SoftTradeTestAvicom.ViewModels
 
         private bool _showOkButton;
 
+        private bool _showBackButton;
+
         public ProductListViewModel(INavigationManager navigationManager,
             SoftTradeDbContext softTradeDbContext)
         {
@@ -25,6 +27,31 @@ namespace SoftTradeTestAvicom.ViewModels
 
             Products = new ObservableCollection<Product>(_db.Products.ToList());
         }
+
+        /// <summary>
+        /// Флаг для отображения кноки перехода на предыдущее View
+        /// </summary>
+        public bool ShowBackButton
+        {
+            get => _showBackButton;
+            set { _showBackButton = value; OnPropertyChanged(); }
+        }
+
+        /// <summary>
+        /// Показать клиентов выбранного продукта
+        /// </summary>
+        public Command ShowProductsClients =>
+            new(obj =>
+            {
+                var input = new NavigationInput
+                {
+                    NavigationTo = NavigationKeys.ClientListView,
+                    NavigationFrom = NavigationKeys.ProductListView,
+                    Arg = SelectedProduct
+                };
+                _navigationManager.Navigate(input);
+            },
+            obj => SelectedProduct != null);
 
         /// <summary>
         /// Флаг отображения кнопки для выбора записи
@@ -47,7 +74,6 @@ namespace SoftTradeTestAvicom.ViewModels
                     NavigationFrom = NavigationKeys.ProductListView
                 };
                 _navigationManager.Navigate(input);
-                ShowOkButton = false;
             },
             obj => _oldView != null);
 
@@ -64,7 +90,6 @@ namespace SoftTradeTestAvicom.ViewModels
                     Arg = SelectedProduct
                 };
                 _navigationManager.Navigate(input);
-                ShowOkButton = false;
             },
             obj => SelectedProduct != null);
 
@@ -94,7 +119,6 @@ namespace SoftTradeTestAvicom.ViewModels
                     NavigationTo = NavigationKeys.MainMenuView
                 };
                 _navigationManager.Navigate(input);
-                ShowOkButton = false;
             });
 
         /// <summary>
@@ -124,7 +148,6 @@ namespace SoftTradeTestAvicom.ViewModels
                     NavigationFrom = NavigationKeys.ProductListView
                 };
                 _navigationManager.Navigate(input);
-                ShowOkButton = false;
             });
 
         /// <summary>
@@ -140,7 +163,6 @@ namespace SoftTradeTestAvicom.ViewModels
                     Arg = SelectedProduct
                 };
                 _navigationManager.Navigate(input);
-                ShowOkButton = false;
             },
             obj => SelectedProduct != null);
 
@@ -160,6 +182,8 @@ namespace SoftTradeTestAvicom.ViewModels
         public void OnNavigatingFrom()
         {
             SelectedProduct = null;
+            ShowOkButton = false;
+            ShowBackButton = false;
         }
 
         /// <summary>
@@ -170,7 +194,7 @@ namespace SoftTradeTestAvicom.ViewModels
         {
             _oldView = arg.NavigationFrom;
 
-            if (_oldView == NavigationKeys.ProductEditView)
+            if (_oldView == NavigationKeys.ProductEditView || _oldView == NavigationKeys.MainMenuView)
             {
                 Products = new ObservableCollection<Product>(_db.Products.ToList());
                 OnPropertyChanged(nameof(Products));
@@ -178,6 +202,19 @@ namespace SoftTradeTestAvicom.ViewModels
             else if (_oldView == NavigationKeys.ClientEditView)
             {
                 ShowOkButton = true;
+                ShowBackButton = true;
+            }
+            else if (_oldView == NavigationKeys.ClientListView && arg.Arg is Client client)
+            {
+                ShowBackButton = true;
+
+                var query =
+                    from el in _db.Products
+                    where el.Clients.Contains(client)
+                    select el;
+
+                Products = new ObservableCollection<Product>(query.ToList());
+                OnPropertyChanged(nameof(Products));
             }
         }
     }
