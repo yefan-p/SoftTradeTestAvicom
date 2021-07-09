@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using SoftTradeTestAvicom.Utils;
 using SoftTradeTestAvicom.Models;
 using System.Collections.ObjectModel;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace SoftTradeTestAvicom.ViewModels
 {
@@ -30,13 +29,13 @@ namespace SoftTradeTestAvicom.ViewModels
         {
             _navigationManager = navigationManager;
             _db = softTradeDbContext;
-            Products = new ObservableHashSet<Product>();
+            Products = new ObservableCollection<Product>();
         }
 
         /// <summary>
         /// Список продуктов клиента
         /// </summary>
-        public ObservableHashSet<Product> Products { get; set; }
+        public ObservableCollection<Product> Products { get; set; }
 
         /// <summary>
         /// Выбранный продукт
@@ -76,8 +75,15 @@ namespace SoftTradeTestAvicom.ViewModels
         public Command DeleteProduct =>
             new(obj =>
             {
-                Products.Remove(SelectedProduct);
-                OnPropertyChanged(nameof(Products));
+                foreach (Product item in Products)
+                {
+                    if (item.Id == SelectedProduct.Id)
+                    {
+                        Products.Remove(item);
+                        OnPropertyChanged(nameof(Products));
+                        break;
+                    }                 
+                }
             });
 
         /// <summary>
@@ -155,14 +161,14 @@ namespace SoftTradeTestAvicom.ViewModels
             {
                 Client = client;
                 _addNew = false;
-                Products = new ObservableHashSet<Product>(Client.Products);
+                Products = new ObservableCollection<Product>(Client.Products);
             }
             else if (arg.Arg is Manager manager)
             {
                 Client.ManagerId = manager.Id;
                 Client.Manager = manager;
             }
-            else if (arg.Arg is Product product)
+            else if (arg.Arg is Product product && !Products.Contains(product))
             {
                 Products.Add(product);
             }
@@ -170,7 +176,7 @@ namespace SoftTradeTestAvicom.ViewModels
             {
                 _addNew = true;
                 Client = new Client();
-                Products = new ObservableHashSet<Product>();
+                Products = new ObservableCollection<Product>();
             }
         }
     }
