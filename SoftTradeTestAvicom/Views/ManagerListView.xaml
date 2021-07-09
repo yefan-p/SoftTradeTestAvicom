@@ -9,25 +9,36 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <utility:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter" />
+        <Style TargetType="Button" x:Key="ButtonStyle">
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Margin" Value="20"/>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="TextStyle">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Margin" Value="20"/>
+        </Style>
     </UserControl.Resources>
-    <StackPanel>
-        <Label>Manager List</Label>
-        <Button Command="{Binding GoMain}">Main menu</Button>
-        <Button Command="{Binding GoBack}" Visibility="{Binding ShowOkButton, Converter={StaticResource BooleanVisibilityConverter}}">Back</Button>
-        <Button Command="{Binding Ok}" Visibility="{Binding ShowOkButton, Converter={StaticResource BooleanVisibilityConverter}}">Ok</Button>
-        <Button Command="{Binding Add}">Add</Button>
-        <Button Command="{Binding Edit}">Edit</Button>
-        <Button Command="{Binding Delete}" CommandParameter="{Binding SelectedManager}">Delete</Button>
-        <Button Command="{Binding Refresh}">Refresh</Button>
-        <Button Command="{Binding ShowManagersClients}">Show manager's clients</Button>
-        <ListBox ItemsSource="{Binding Managers}" SelectedItem="{Binding SelectedManager}">
+    <DockPanel>
+        <TextBlock DockPanel.Dock="Top" Style="{StaticResource TextStyle}" FontSize="20">Managers</TextBlock>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding GoMain}">Main menu</Button>
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding GoBack}" Visibility="{Binding ShowOkButton, Converter={StaticResource BooleanVisibilityConverter}}">Back</Button>
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding Ok}" Visibility="{Binding ShowOkButton, Converter={StaticResource BooleanVisibilityConverter}}">Ok</Button>
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding Add}">Add</Button>
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding Edit}">Edit</Button>
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding Delete}" CommandParameter="{Binding SelectedManager}">Delete</Button>
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding Refresh}">Refresh</Button>
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding ShowManagersClients}">Show manager's clients</Button>
+        </StackPanel>
+        <ListBox ItemsSource="{Binding Managers}" SelectedItem="{Binding SelectedManager}" Margin="20">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Margin="5">
-                        <TextBlock FontSize="18" Text="{Binding Path=Name}" />
+                        <TextBlock FontSize="14" Text="{Binding Path=Name}" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-    </StackPanel>
+    </DockPanel>
 </UserControl>

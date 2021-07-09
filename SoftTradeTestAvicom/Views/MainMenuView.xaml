@@ -6,9 +6,16 @@
              xmlns:local="clr-namespace:SoftTradeTestAvicom.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <StackPanel>
-        <Button Command="{Binding GoManagerList}">Manager List</Button>
-        <Button Command="{Binding GoProductList}">Product List</Button>
-        <Button Command="{Binding GoClientList}">Client List</Button>
+    <UserControl.Resources>
+        <Style TargetType="Button" x:Key="ButtonStyle">
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+    </UserControl.Resources>
+    <StackPanel  HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Button Command="{Binding GoManagerList}" Style="{StaticResource ButtonStyle}" >Managers</Button>
+        <Button Command="{Binding GoProductList}" Style="{StaticResource ButtonStyle}" >Products</Button>
+        <Button Command="{Binding GoClientList}" Style="{StaticResource ButtonStyle}" >Clients</Button>
     </StackPanel>
 </UserControl>

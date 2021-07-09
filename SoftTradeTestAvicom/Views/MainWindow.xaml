@@ -6,8 +6,7 @@
         xmlns:local="clr-namespace:SoftTradeTestAvicom.Views"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <StackPanel>
-        <ContentControl x:Name="FrameContent" x:FieldModifier="public" VerticalAlignment="Top" 
-                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-    </StackPanel>
+    <Grid>
+        <ContentControl x:Name="FrameContent" x:FieldModifier="public" />
+    </Grid>
 </Window>

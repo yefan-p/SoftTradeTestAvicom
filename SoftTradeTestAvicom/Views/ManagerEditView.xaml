@@ -6,11 +6,30 @@
              xmlns:local="clr-namespace:SoftTradeTestAvicom.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <StackPanel>
-        <TextBlock>Manager edit</TextBlock>
-        <Button Command="{Binding Cancel}">Cancel</Button>
-        <Button Command="{Binding Ok}">Ok</Button>
-        <TextBlock>Имя: </TextBlock>
-        <TextBox Text="{Binding Manager.Name}"></TextBox>
+    <UserControl.Resources>
+        <Style TargetType="Button" x:Key="ButtonStyle">
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Margin" Value="20"/>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="TextStyle">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Margin" Value="20"/>
+        </Style>
+        <Style TargetType="TextBox" x:Key="TextboxStyle">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Margin" Value="20"/>
+        </Style>
+    </UserControl.Resources>
+    <StackPanel >
+        <TextBlock Style="{StaticResource TextStyle}">Manager edit</TextBlock>
+        <StackPanel Orientation="Horizontal">
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding Ok}">Ok</Button>
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding Cancel}">Cancel</Button>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Style="{StaticResource TextStyle}">Имя:</TextBlock>
+            <TextBox Width="400" Style="{StaticResource TextboxStyle}" Text="{Binding Manager.Name}"></TextBox>
+        </StackPanel>
     </StackPanel>
 </UserControl>

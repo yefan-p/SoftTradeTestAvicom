@@ -9,32 +9,43 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <utility:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter" />
+        <Style TargetType="Button" x:Key="ButtonStyle">
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Margin" Value="20"/>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="TextStyle">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Margin" Value="20"/>
+        </Style>
     </UserControl.Resources>
-    <StackPanel>
-        <Label>Product List</Label>
-        <Button Command="{Binding GoMainMenu}">Main menu</Button>
-        <Button Command="{Binding GoBack}" Visibility="{Binding ShowBackButton, Converter={StaticResource BooleanVisibilityConverter}}">Back</Button>
-        <Button Command="{Binding Ok}" Visibility="{Binding ShowOkButton, Converter={StaticResource BooleanVisibilityConverter}}">Ok</Button>
-        <Button Command="{Binding Add}">Add</Button>
-        <Button Command="{Binding Edit}">Edit</Button>
-        <Button Command="{Binding Delete}" CommandParameter="{Binding SelectedProduct}">Delete</Button>
-        <Button Command="{Binding Refresh}">Refresh</Button>
-        <Button Command="{Binding ShowProductsClients}">Show product's clients</Button>
-        <ListBox Grid.Column="0" ItemsSource="{Binding Products}" SelectedItem="{Binding SelectedProduct}">
+    <DockPanel>
+        <TextBlock DockPanel.Dock="Top" Style="{StaticResource TextStyle}">Products</TextBlock>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding GoMainMenu}">Main menu</Button>
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding GoBack}" Visibility="{Binding ShowBackButton, Converter={StaticResource BooleanVisibilityConverter}}">Back</Button>
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding Ok}" Visibility="{Binding ShowOkButton, Converter={StaticResource BooleanVisibilityConverter}}">Ok</Button>
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding Add}">Add</Button>
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding Edit}">Edit</Button>
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding Delete}" CommandParameter="{Binding SelectedProduct}">Delete</Button>
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding Refresh}">Refresh</Button>
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding ShowProductsClients}">Show product's clients</Button>
+        </StackPanel>
+        <ListBox ItemsSource="{Binding Products}" SelectedItem="{Binding SelectedProduct}" Margin="20">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Margin="5">
-                        <TextBlock FontSize="18" Text="Product name: " Margin="3" />
-                        <TextBlock FontSize="18" Text="{Binding Path=Name}" Margin="3"/>
-                        <TextBlock FontSize="18" Text=";    Price: " Margin="3"/>
-                        <TextBlock FontSize="18" Text="{Binding Path=Price}" Margin="3"/>
-                        <TextBlock FontSize="18" Text=";    Type: " Margin="3"/>
-                        <TextBlock FontSize="18" Text="{Binding Path=Type}" Margin="3"/>
-                        <TextBlock FontSize="18" Text=";    Period: " Margin="3"/>
-                        <TextBlock FontSize="18" Text="{Binding Path=SubscriptionPeriod}" Margin="3"/>
+                        <TextBlock FontSize="14" Text="Product name: " Margin="3" />
+                        <TextBlock FontSize="14" Text="{Binding Path=Name}" Margin="3"/>
+                        <TextBlock FontSize="14" Text=";    Price: " Margin="3"/>
+                        <TextBlock FontSize="14" Text="{Binding Path=Price}" Margin="3"/>
+                        <TextBlock FontSize="14" Text=";    Type: " Margin="3"/>
+                        <TextBlock FontSize="14" Text="{Binding Path=Type}" Margin="3"/>
+                        <TextBlock FontSize="14" Text=";    Period: " Margin="3"/>
+                        <TextBlock FontSize="14" Text="{Binding Path=SubscriptionPeriod}" Margin="3"/>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-    </StackPanel>
+    </DockPanel>
 </UserControl>

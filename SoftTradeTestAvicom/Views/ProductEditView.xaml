@@ -10,21 +10,35 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
     <UserControl.Resources>
         <utility:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter" />
+        <Style TargetType="Button" x:Key="ButtonStyle">
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Margin" Value="20"/>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="TextStyle">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Margin" Value="20"/>
+        </Style>
+        <Style TargetType="TextBox" x:Key="TextboxStyle">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Margin" Value="20"/>
+        </Style>
     </UserControl.Resources>
     <StackPanel>
-        <TextBlock>Product edit</TextBlock>
-        <Button Command="{Binding Cancel}">Cancel</Button>
-        <Button Command="{Binding Ok}">OK</Button>
-        
+        <TextBlock Style="{StaticResource TextStyle}" >Product edit</TextBlock>
+        <StackPanel Orientation="Horizontal">
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding Ok}">OK</Button>
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding Cancel}">Cancel</Button>
+        </StackPanel>
         <StackPanel>
-            <TextBlock>Product name: </TextBlock>
-            <TextBox Text="{Binding Product.Name}"/>
-            <TextBlock>Price:</TextBlock>
-            <TextBox Text="{Binding Product.Price}"/>
-            <TextBlock>Type: </TextBlock>
-            <ComboBox ItemsSource="{Binding ProductType}" SelectedItem="{Binding SelectedProductType}"/>
-            <TextBlock Visibility="{Binding ShowSubscripPeriod, Converter={StaticResource BooleanVisibilityConverter}}">Subscription period: </TextBlock>
-            <ComboBox ItemsSource="{Binding SubscriptionPeriod}" SelectedItem="{Binding Product.SubscriptionPeriod}" Visibility="{Binding ShowSubscripPeriod, Converter={StaticResource BooleanVisibilityConverter}}"/>
+            <TextBlock Style="{StaticResource TextStyle}">Product name: </TextBlock>
+            <TextBox Style="{StaticResource TextboxStyle}" Text="{Binding Product.Name}"/>
+            <TextBlock Style="{StaticResource TextStyle}">Price:</TextBlock>
+            <TextBox Style="{StaticResource TextboxStyle}" Text="{Binding Product.Price}"/>
+            <TextBlock Style="{StaticResource TextStyle}">Type: </TextBlock>
+            <ComboBox FontSize="20" Margin="20" ItemsSource="{Binding ProductType}" SelectedItem="{Binding SelectedProductType}"/>
+            <TextBlock Style="{StaticResource TextStyle}" Visibility="{Binding ShowSubscripPeriod, Converter={StaticResource BooleanVisibilityConverter}}">Subscription period: </TextBlock>
+            <ComboBox FontSize="20" Margin="20" ItemsSource="{Binding SubscriptionPeriod}" SelectedItem="{Binding Product.SubscriptionPeriod}" Visibility="{Binding ShowSubscripPeriod, Converter={StaticResource BooleanVisibilityConverter}}"/>
         </StackPanel>
     </StackPanel>
 </UserControl>

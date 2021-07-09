@@ -6,37 +6,60 @@
              xmlns:local="clr-namespace:SoftTradeTestAvicom.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <StackPanel>
-        <TextBlock>Client edit</TextBlock>
-        <Button Command="{Binding Cancel}">Cancel</Button>
-        <Button Command="{Binding Ok}">OK</Button>
-        <StackPanel>
-            <TextBlock>Client name: </TextBlock>
-            <TextBox Text="{Binding Client.Name}"/>
-            <TextBlock>Crucial: </TextBlock>
-            <CheckBox IsChecked="{Binding Client.Status}"/>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock>Manager:</TextBlock>
-                <TextBlock Text="{Binding Client.Manager.Name}"/>
-                <Button Command="{Binding SelectManager}">Select manager</Button>
+    <UserControl.Resources>
+        <Style TargetType="Button" x:Key="ButtonStyle">
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Margin" Value="20"/>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="TextStyle">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Margin" Value="20"/>
+        </Style>
+        <Style TargetType="TextBox" x:Key="TextboxStyle">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Margin" Value="20"/>
+        </Style>
+    </UserControl.Resources>
+    <DockPanel>
+        <TextBlock Style="{StaticResource TextStyle}" DockPanel.Dock="Top">Client edit</TextBlock>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding Cancel}">Cancel</Button>
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding Ok}">OK</Button>
+        </StackPanel>
+        <DockPanel>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                <TextBlock Style="{StaticResource TextStyle}">Client name:</TextBlock>
+                <TextBox Width="400" Style="{StaticResource TextboxStyle}"  Text="{Binding Client.Name}"/>
             </StackPanel>
-            <StackPanel>
-                <TextBlock Text="Products: "/>
-                <Button Command="{Binding AddProduct}">Add product</Button>
-                <Button Command="{Binding DeleteProduct}">Delete product</Button>
-                <ListBox ItemsSource="{Binding Products}" SelectedItem="{Binding SelectedProduct}">
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                <TextBlock Style="{StaticResource TextStyle}">Crucial:</TextBlock>
+                <CheckBox IsChecked="{Binding Client.Status}" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                <TextBlock Style="{StaticResource TextStyle}">Manager:</TextBlock>
+                <TextBlock Style="{StaticResource TextStyle}" Text="{Binding Client.Manager.Name}"/>
+                <Button Style="{StaticResource ButtonStyle}" Command="{Binding SelectManager}">Select manager</Button>
+            </StackPanel>
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource TextStyle}" Text="Products: "/>
+                    <Button Style="{StaticResource ButtonStyle}" Command="{Binding AddProduct}">Add product</Button>
+                    <Button Style="{StaticResource ButtonStyle}" Command="{Binding DeleteProduct}">Delete product</Button>
+                </StackPanel>
+                <ListBox ItemsSource="{Binding Products}" SelectedItem="{Binding SelectedProduct}" Margin="20">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock FontSize="18" Text="Product name: " Margin="3" />
-                                <TextBlock FontSize="18" Text="{Binding Path=Name}" Margin="3"/>
-                                <TextBlock FontSize="18" Text=";    Price: " Margin="3"/>
-                                <TextBlock FontSize="18" Text="{Binding Path=Price}" Margin="3"/>
+                                <TextBlock Style="{StaticResource TextStyle}" FontSize="18" Text="Product name: " Margin="3" />
+                                <TextBlock Style="{StaticResource TextStyle}" FontSize="18" Text="{Binding Path=Name}" Margin="3"/>
+                                <TextBlock Style="{StaticResource TextStyle}" FontSize="18" Text=";    Price: " Margin="3"/>
+                                <TextBlock Style="{StaticResource TextStyle}" FontSize="18" Text="{Binding Path=Price}" Margin="3"/>
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-            </StackPanel>
-        </StackPanel>
-    </StackPanel>
+            </DockPanel>
+        </DockPanel>
+    </DockPanel>
 </UserControl>
