@@ -55,7 +55,15 @@ namespace SoftTradeTestAvicom.ViewModels
                 }
                 else
                 {
-                    _ = _db.Managers.Update(Manager);
+                    var query =
+                        from el in _db.Managers
+                        where el.Id == Manager.Id
+                        select el;
+
+                    Manager resultQuery = query.Single();
+                    resultQuery.Name = Manager.Name;
+
+                    _ = _db.Managers.Update(resultQuery);
                     _ = _db.SaveChanges();
                 }
                 var input = new NavigationInput
@@ -86,7 +94,12 @@ namespace SoftTradeTestAvicom.ViewModels
 
             if (arg.Arg is Manager manager)
             {
-                Manager = manager;
+                Manager = new Manager()
+                {
+                    Id = manager.Id,
+                    Name = manager.Name,
+                    Clients = manager.Clients
+                };
                 _addNew = false;
             }
             else

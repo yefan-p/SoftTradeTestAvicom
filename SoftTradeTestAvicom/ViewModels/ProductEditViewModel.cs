@@ -93,7 +93,18 @@ namespace SoftTradeTestAvicom.ViewModels
                 }
                 else
                 {
-                    _ = _db.Products.Update(Product);
+                    var query =
+                        from el in _db.Products
+                        where el.Id == Product.Id
+                        select el;
+
+                    Product productDb = query.Single();
+                    productDb.Name = Product.Name;
+                    productDb.Price = Product.Price;
+                    productDb.SubscriptionPeriod = Product.SubscriptionPeriod;
+                    productDb.Type = Product.Type;
+
+                    _ = _db.Products.Update(productDb);
                     _ = _db.SaveChanges();
                 }
                 var input = new NavigationInput
@@ -133,7 +144,15 @@ namespace SoftTradeTestAvicom.ViewModels
 
             if (arg.Arg is Product product)
             {
-                Product = product;
+                Product = new Product
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Clients = product.Clients,
+                    Price = product.Price,
+                    SubscriptionPeriod = product.SubscriptionPeriod,
+                    Type = product.Type
+                };
                 _addNew = false;
                 SelectedProductType = product.Type;
             }

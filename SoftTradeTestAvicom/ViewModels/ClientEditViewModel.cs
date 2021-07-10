@@ -82,9 +82,10 @@ namespace SoftTradeTestAvicom.ViewModels
                         Products.Remove(item);
                         OnPropertyChanged(nameof(Products));
                         break;
-                    }                 
+                    }
                 }
-            });
+            },
+            obj => SelectedProduct != null);
 
         /// <summary>
         /// Выбрать менеджера
@@ -128,7 +129,18 @@ namespace SoftTradeTestAvicom.ViewModels
                 }
                 else
                 {
-                    _ = _db.Clients.Update(Client);
+                    var query =
+                        from el in _db.Clients
+                        where el.Id == Client.Id
+                        select el;
+
+                    Client dbClient = query.Single();
+                    dbClient.ManagerId = Client.ManagerId;
+                    dbClient.Name = Client.Name;
+                    dbClient.Products = Client.Products;
+                    dbClient.Status = Client.Status;
+
+                    _ = _db.Clients.Update(dbClient);
                     _ = _db.SaveChanges();
                 }
                 var input = new NavigationInput
@@ -146,7 +158,7 @@ namespace SoftTradeTestAvicom.ViewModels
         /// </summary>
         public void OnNavigatingFrom()
         {
-            
+            SelectedProduct = null;
         }
 
         /// <summary>
@@ -159,7 +171,15 @@ namespace SoftTradeTestAvicom.ViewModels
 
             if (arg.Arg is Client client)
             {
-                Client = client;
+                Client = new Client
+                {
+                    Id = client.Id,
+                    Name = client.Name,
+                    Status = client.Status,
+                    Manager = client.Manager,
+                    ManagerId = client.ManagerId,
+                    Products = client.Products
+                };
                 _addNew = false;
                 Products = new ObservableCollection<Product>(Client.Products);
             }
