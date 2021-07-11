@@ -13,10 +13,7 @@ namespace SoftTradeTestAvicom.Utils
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((value is bool arg) && arg)
-                return "Visible";
-            else
-                return "Collapsed";
+            return (value is bool arg) && arg ? "Visible" : "Collapsed";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

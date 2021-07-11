@@ -92,7 +92,7 @@ namespace SoftTradeTestAvicom.ViewModels
         {
             _oldView = arg.NavigationFrom;
 
-            if (arg.Arg is Manager manager)
+            if (arg.Arg is Manager manager && Manager != null)
             {
                 Manager = new Manager()
                 {
